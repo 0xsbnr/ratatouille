@@ -19,7 +19,7 @@ export default function Navbar({ isLoggedIn }) {
         {isLoggedIn ? (
           <div className="nav-links">
             <Link to="/home" className="nav-link">
-              Home
+              Group Selection
             </Link>
             <Link to="/drawing" className="nav-link">
               Drawing
@@ -31,7 +31,7 @@ export default function Navbar({ isLoggedIn }) {
         ) : (
           <div className="nav-links">
             <Link to="/" className="nav-link">
-              Home
+              Landing
             </Link>
             <Link to="/login" className="nav-button primary-button">
               Log in / Sign up
