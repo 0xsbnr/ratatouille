@@ -181,7 +181,7 @@ export default function Drawing() {
     <section className="stack">
       <div>
         <h1 className="hero-title">Time to draw!</h1>
-        <p className="hero-text">
+        <p className="hero-title">
           Draw with your mouse or finger according to the topic above in your tile. You can erase, undo or redo!
         </p>
         <h1 className = "hero-text">
@@ -218,7 +218,7 @@ export default function Drawing() {
             </label>
 
             <label className="toolbar-label slider-label">
-              Brush size: {brushSize}
+              Pencil size: {brushSize}
               <input
                 type="range"
                 min="1"
