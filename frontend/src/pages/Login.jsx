@@ -1,6 +1,5 @@
 function LoginPage() {
   return (
-    <div className="min-h-screen bg-[url('/login-bg.jpg')] bg-cover bg-center bg-no-repeat">
       <div className="min-h-screen grid place-items-center bg-slate-950/55 p-6">
         <div className="w-full max-w-md rounded-2xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-md">
           <h1 className="text-2xl font-semibold text-white">Read & Meet</h1>
@@ -45,6 +44,5 @@ function LoginPage() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
