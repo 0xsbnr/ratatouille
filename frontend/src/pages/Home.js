@@ -8,7 +8,7 @@ library.add(faTrash)
 class HomePage extends React.Component {
   constructor(thing) {
     super(thing)
-    this.group_ids = getUsersGroups(123)
+    this.group_ids = this.getUsersGroups(123)
     this.state = {items:[], currentItem:{ name:'', id:0}}
     
     for (let i = 0; i < this.group_ids.length; i++) {
@@ -40,11 +40,11 @@ class HomePage extends React.Component {
   }
 
   setGroupName(id) {
-    this.state.currentItem.name = getGroupName(id);
+    this.state.currentItem.name = this.getGroupName(id);
   }
 
   handleInput(e){
-    this.setState({currentItem:{name: setGroupName(e.target.value),id: e.target.value}})
+    this.setState({currentItem:{name: this.setGroupName(e.target.value),id: e.target.value}})
   }
 
   deleteItem(id){
