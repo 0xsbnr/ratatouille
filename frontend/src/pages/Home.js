@@ -1,9 +1,9 @@
 import React from "react";
 import ListItems from './ListItems'
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
-library.add(faTrash)
+//import { library } from '@fortawesome/fontawesome-svg-core'
+//import { faTrash } from '@fortawesome/free-solid-svg-icons'
+//library.add(faTrash)
 
 class HomePage extends React.Component {
   constructor(thing) {
