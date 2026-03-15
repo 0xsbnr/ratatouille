@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from "react";
 export default function Drawing() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-  const historyRef = useref([]);
+  const historyRef = useRef([]);
   const redoStackRef = useRef([]);
 
   const [isDrawing, setIsDrawing] = useState(false);
-  const [tool, setTool] = useState('brush');
+  const [tool, setTool] = useState("brush");
   const [color, setColor] = useState("#000000");
   const [brushSize, setBrushSize] = useState(6);
   const [eraserSize, setEraserSize] = useState(18);
@@ -32,13 +32,14 @@ export default function Drawing() {
     const context = contextRef.current;
     if (!context) return;
 
-    if (tool === "brush") {
+    if (tool === "eraser") {
+      context.globalCompositeOperation = "source-over";
+      context.strokeStyle = "white";
+      context.lineWidth = eraserSize;
+    } else {
       context.globalCompositeOperation = "source-over";
       context.strokeStyle = color;
       context.lineWidth = brushSize;
-    } else {
-      context.globalCompositeOperation = "destination-out";
-      context.lineWidth = eraserSize;
     }
   }, [tool, color, brushSize, eraserSize]);
 
@@ -66,7 +67,7 @@ export default function Drawing() {
     historyRef.current.push(canvas.toDataURL());
 
     if (historyRef.current.length > 40) {
-      historyRef.current.shirt();
+      historyRef.current.shift();
     }
   };
 
@@ -82,7 +83,7 @@ export default function Drawing() {
       context.fillRect(0, 0, canvas.width, canvas.height);
       context.drawImage(image, 0, 0);
 
-      if (tool == "eraser") {
+      if (tool === "eraser") {
         context.globalCompositeOperation = "destination-out";
         context.lineWidth = eraserSize;
       } else {
@@ -99,7 +100,12 @@ export default function Drawing() {
     event.preventDefault();
 
     const context = contextRef.current;
-  }
+    const { x, y } = getPointerPosition(event);
+
+    context.beginPath();
+    context.moveTo(x, y);
+    setIsDrawing(true);
+  };
 
   const draw = (event) => {
     if (!isDrawing) return;
@@ -110,7 +116,7 @@ export default function Drawing() {
 
     context.lineTo(x, y);
     context.stroke();
-  }
+  };
 
   const stopDrawing = () => {
     if (!isDrawing) return;
@@ -165,50 +171,54 @@ export default function Drawing() {
 
   const saveAsPng = () => {
     const canvas = canvasRef.current;
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.download = "drawing.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
-  }
+  };
 
   return (
-    <section className = "stack">
+    <section className="stack">
       <div>
-        <h1>Drawing</h1>
-        <p className="muted-text">
+        <h1 className="hero-title">Time to draw!</h1>
+        <p className="hero-text">
           Draw with your mouse or finger according to the topic above in your tile. You can erase, undo or redo!
         </p>
+        <h1 className = "hero-text">
+        Angel
+        </h1>
       </div>
 
-      <div> className = "card"
-        <div className = "drawing-toolbar">
-          <button
-            onClick={() => setTool("brush")}
-            className = {tool === "brush" ? "primary-button" : "secondary-button"}          
-          >
-            Brush
-          </button>
-          <button
-            onClick={() => setTool("eraser")}
-            className = {tool === "eraser" ? "primary-button" : "secondary-button"}          
-          >
-            Eraser
-          </button>
-          </div> 
+      <div className="card">
+        <div className="drawing-toolbar">
+          <div className="toolbar-group">
+            <button
+              onClick={() => setTool("brush")}
+              className={tool === "brush" ? "primary-button" : "secondary-button"}
+            >
+              Brush
+            </button>
+            <button
+              onClick={() => setTool("eraser")}
+              className={tool === "eraser" ? "primary-button" : "secondary-button"}
+            >
+              Eraser
+            </button>
+          </div>
 
-          <div className = "toolbar-group">
-            <label className = "toolbar-label">
+          <div className="toolbar-group">
+            <label className="toolbar-label">
               Colour
               <input
-                type = 'color'
-                value = {color}
+                type="color"
+                value={color}
                 onChange={(e) => setColor(e.target.value)}
                 disabled={tool === "eraser"}
               />
             </label>
 
             <label className="toolbar-label slider-label">
-              Pencil size: {brushSize}
+              Brush size: {brushSize}
               <input
                 type="range"
                 min="1"
@@ -228,30 +238,38 @@ export default function Drawing() {
                 onChange={(e) => setEraserSize(Number(e.target.value))}
               />
             </label>
-
-            <div className="toolbar-group">
-              <button onClick ={undo} className = "secondary-button">
-                Undo
-              </button>
-              <button onClick ={redo} className = "secondary-button">
-                Redo
-              </button>
-              <button onClick ={clearCanvas} className = "secondary-button">
-                Clear
-              </button>
-              <button onClick ={saveAsPng} className = "primary-button">
-                Save as PNG
-              </button>
-            </div>
           </div>
 
-          <div className = "canvas-frame">
-            <canvas
-
-            />
+          <div className="toolbar-group">
+            <button onClick={undo} className="secondary-button">
+              Undo
+            </button>
+            <button onClick={redo} className="secondary-button">
+              Redo
+            </button>
+            <button onClick={clearCanvas} className="secondary-button">
+              Clear
+            </button>
+            <button onClick={saveAsPng} className="primary-button">
+              Save as PNG
+            </button>
           </div>
+        </div>
 
+        <div className="canvas-frame">
+          <canvas
+            ref={canvasRef}
+            className="drawing-canvas"
+            onMouseDown={startDrawing}
+            onMouseMove={draw}
+            onMouseUp={stopDrawing}
+            onMouseLeave={stopDrawing}
+            onTouchStart={startDrawing}
+            onTouchMove={draw}
+            onTouchEnd={stopDrawing}
+          />
+        </div>
       </div>
     </section>
-  )
+  );
 }
