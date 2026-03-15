@@ -9,10 +9,10 @@ class HomePage extends React.Component {
   constructor(thing) {
     super(thing)
     this.group_ids = this.getUsersGroups(123)
-    this.state = {items:[], currentItem:{ name:'', id:0}}
+    this.state = {items:[], currentItem:{ name:'', id:undefined}}
     
     for (let i = 0; i < this.group_ids.length; i++) {
-      let temp = { name: this.getGroupName(this.group_ids[i]), id: this.group_ids[i]}
+      let temp = { name: this.group_ids[i].name, id: this.group_ids[i].id}
       this.state.items = [...this.state.items, temp]
     }
     this.addItem = this.addItem.bind(this);
@@ -22,12 +22,30 @@ class HomePage extends React.Component {
   }
 
   getUsersGroups(user_id) {
-    const idList  = [1234,5678,9123];
-    return idList;
+    var grp = {
+      id : 1,
+      name : "yo",
+      drawing : {
+        id: 4,
+        topic: "",
+        squares: []
+      },
+      members: [],
+      start_time: "",
+      close_time: ""
+    }
+    return [{ name:grp.name, id:grp.id, drawing:grp.drawing}, { name:grp.name, id:grp.id, drawing:grp.drawing}];
   }
 
-  getGroupName(group_id) {
-    return "GroupNamed" + group_id;
+  getGroupName(id) {
+    var returner = "error"
+    for (let i = 0; i < this.group_ids.length; i++) {
+      if (this.group_ids[i].id === id) {
+        returner = this.group_ids[i].name
+        break
+      }
+    }
+    return returner
   }
 
   addItem(e) {
@@ -35,12 +53,12 @@ class HomePage extends React.Component {
     const newItem = this.state.currentItem;
     if(newItem.id !==0){
       const items = [...this.state.items, newItem];
-    this.setState({items: items, currentItem:{ name: '', id:0}})
+    this.setState({items: items, currentItem:{ name: '', id:undefined}})
     }
   }
 
   setGroupName(id) {
-    this.state.currentItem.name = this.getGroupName(id);
+    this.setState({items: this.items, currentItem:{ name: this.getGroupName(id), id: id}});
   }
 
   handleInput(e){
@@ -56,7 +74,7 @@ class HomePage extends React.Component {
   setUpdate(name,id){
     console.log("items:"+this.state.items);
     const items = this.state.items;
-    items.map(item=>{      
+    items.forEach(item=>{      
       if(item.id===id){
         console.log(item.id +"    "+id)
         item.name= name;
@@ -73,9 +91,11 @@ class HomePage extends React.Component {
           <input type="text" placeholder="Enter group ID" value= {this.state.currentItem.id} onChange={this.handleInput}></input>
           <button type="Add group">Add</button>
         </form>
-        <p>{this.state.items.id}</p>
+        <p>{this.state.currentItem.id}</p>
         
-          <ListItems items={this.state.items} deleteItem={this.deleteItem} setUpdate={this.setUpdate}/>
+          {/* <ListItems items={this.state.items} deleteItem={this.deleteItem} setUpdate={this.setUpdate}/> */}
+          <ListItems items={this.state.items} info={this.group_ids}/>
+
         
       </header>
     </div>
