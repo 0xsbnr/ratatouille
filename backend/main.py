@@ -11,9 +11,9 @@ CORS(app, origins=["https://localhost:8080", "http://localhost:8080",
      "https://localhost:3000", "http://localhost:3000", "192.168.0.37"])
 
 
-@app.route("/")
+@app.route("/api/")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    return "<p>spinning rats api</p>"
 
 
 
@@ -30,7 +30,7 @@ def login():
 def signup():
     if request.is_json:
         data = request.json
-        return json.dumps(database.sign_up(username=data["username"],password=data["password"])
+        return json.dumps(database.sign_up(username=data["username"],password=data["password"]))
     else:
         return json.dumps("ERR Content type is not supported."), 418
 
