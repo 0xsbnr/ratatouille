@@ -24,18 +24,18 @@ class Database:
         print(table, conditions)
         self.cur.execute(f"DELETE FROM {table} WHERE {",".join(conditions)}""")
         self.con.commit()
+
+    #-----------------------------
     
     def sign_up(self, username:str, password:str):
-        user_id = self.cur.execute("""INSERT INTO USERS 
-                                   (username, password) 
-                                   VALUES (?, ?) RETURNING (id)""", (username, password))
+        user_id = self.cur.execute("""INSERT INTO USERS (username, password) VALUES (?, ?) RETURNING (id)""", (username, password,)).fetchone()
         self.con.commit()
         return user_id
 
     def log_in(self, username:str, password:str):
-        user_id = self.cur.execute("""SELECT id FROM USERS WHERE username=? and password=?""", (username,password,)).fetchone()
+        user_id = self.cur.execute("""SELECT id FROM USERS WHERE username=? AND password=?""", (username,password,)).fetchone()
         if user_id == {}:
-            return -1
+            return {"id":-1}
         else:
             return user_id
     
@@ -50,7 +50,7 @@ class Database:
         return group_id
 
     def get_groups(self, user_id:int):
-        group_ids self.cur.execute("""SELECT id FROM GROUPS WHERE user_id=?""", (user_id,)).fetchall()
+        group_ids = self.cur.execute("""SELECT id FROM GROUPS WHERE user_id=?""", (user_id,)).fetchall()
         groups = []
         for grp in group_ids:
             groups += self.cur.execute("""SELECT GROUPS.id, GROUPS.name, GROUPS.daily_start_time, GROUPS.daily_close_time, GROUPS""")
