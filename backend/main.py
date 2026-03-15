@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, request
 from db import Database
 import json
 from flask_cors import CORS
 import our_types
 
-database = Database("i")
+database = Database("db/rat.db")
 
 app = Flask(__name__)
 CORS(app, origins=["https://localhost:8080", "http://localhost:8080",
@@ -30,6 +30,7 @@ def login():
 def signup():
     if request.is_json:
         data = request.json
+        print(data)
         return json.dumps(database.sign_up(username=data["username"],password=data["password"]))
     else:
         return json.dumps("ERR Content type is not supported."), 418
@@ -58,16 +59,19 @@ def join_group():
 def send_drawing():
     if request.is_json:
         data = request.json
+        drawing_file = flask.request.files.get('drawing.png')
+        drawing_save_path = f"drawings/{data['user_id']}_{data['drawing_id']}.png"
+        drawing_file.save(drawing_save_path)
+
         return json.dumps(database.add_square(user_id=["user_id"],file_path=data["file_path"],complete=data["complete"]))
     else:
-
         return json.dumps("ERR Content type is not supported."), 418
 
 @app.route('/api/get_full_drawing', methods=['GET', 'POST'])
 def get_full_drawing():
     if request.is_json:
         data = request.json
-        return json.dumps(bad_data)
+        return json.dumps()
     else:
 
         return json.dumps("ERR Content type is not supported."), 418

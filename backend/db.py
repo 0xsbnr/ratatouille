@@ -28,7 +28,8 @@ class Database:
     #-----------------------------
     
     def sign_up(self, username:str, password:str):
-        user_id = self.cur.execute("""INSERT INTO USERS (username, password) VALUES (?, ?) RETURNING (id)""", (username, password,)).fetchone()
+        user_id = self.cur.execute("""INSERT INTO USERS (username, password) VALUES (?, ?) RETURNING id""", (username, password,)).fetchone()
+        print(user_id)
         self.con.commit()
         return user_id
 
@@ -50,15 +51,20 @@ class Database:
         return group_id
 
     def get_groups(self, user_id:int):
-        group_ids = self.cur.execute("""SELECT id FROM GROUPS WHERE user_id=?""", (user_id,)).fetchall()
+        group_ids = self.cur.execute("""SELECT (group_id) FROM GROUP_MEMBERS WHERE user_id=?""", (user_id,)).fetchall()
         groups = []
         for grp in group_ids:
-            groups += self.cur.execute("""SELECT GROUPS.id, GROUPS.name, GROUPS.daily_start_time, GROUPS.daily_close_time, GROUPS""")
-            groups[-1]["members"] = self.cur.execute("""SELECT USERS.id, USERS.username. USERS.password 
+            print(grp['group_id'])
+            groups += self.cur.execute("""SELECT (id, name, daily_start_time, daily_close_time) FROM GROUPS WHERE id=?""", (grp['group_id'],)).fetchone()
+            print(groups)
+            groups[-1]["members"] = self.cur.execute("""SELECT (USERS.id, USERS.username. USERS.password)
                                         FROM GROUP_MEMBERS
                                         FULL OUTER JOIN USERS ON GROUP_MEMBERS.group_id = USERS.id 
                                         WHERE GROUP_MEMBERS.group_id=?
-                                       """, (grp['id']))
+                                       """, (int(grp['group_id']))).fetchall()
+
+            groups[-1]["members"] =  {}
+            groups[-1]["drawings"] = self.cur.execute("""""")
         return groups
 
     def set_up_drawing(self, group_id:int, topic:str, date:str):
@@ -73,10 +79,11 @@ class Database:
 
     def get_drawing(self, drawing_id:int):
         drawing = self.cur.execute("""SELECT * FROM DRAWINGS WHERE id=?""", (drawing_id,)).fetchone()
+        drawing["squares"] = self.cur.execute("""SELECT * FROM SQUARES WHERE """)
         return drawing
 
     def get_drawing_from_group(self, group_id:int, date:str):
-        drawing = self.cur.execute("""SELECT id FROM DRAWINGS WHERE date=?""", (date,)).fetchone()
+        drawing = self.cur.execute("""SELECT id, name FROM DRAWINGS WHERE date=?""", (date,)).fetchone()
         if drawing == {}:
             ...
         else:
