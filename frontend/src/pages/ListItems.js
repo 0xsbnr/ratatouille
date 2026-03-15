@@ -1,32 +1,35 @@
 import React from 'react';
 import './ListItems.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import FlipMove from 'react-flip-move';
+
+
 
 function ListItems(props){
     const items = props.items;
+
+    const ListItem = (item) => {
+    return (
+     <p>
+        <Button key={item.id} onClick={() => {alert('clicked');}} variant="outlined">{item.name}</Button>
+        
+     </p>
+    )
+}
+
+
     const listItems = items.map(item =>
    {
-       return <div className="list" key={item.key}>
-     <p>
-         <input type="text" id={item.key} value={item.text} onChange={(e)=>{
-             props.setUpdate(e.target.value,item.key)}}/>
-        <span>
-       
-        <FontAwesomeIcon className="faicons" onClick={() => {
-            props.deleteItem(item.key)
-        }} icon="trash" />
-        </span>
-     </p>
-     
-    </div>})
-    return <div>
-    hi
-        {/* <FlipMove duration={300} easing="ease-in-out">
-        {listItems}
-        </FlipMove> */}
-    
-    </div>;
+       return <ListItem className="list" key={item.id}/>
+    })
+    console.log(listItems)
+
+//this needs to display the itemLists (the components that comtain the groups) [was meant to use the flipmove but that doesnt work]
+    return (
+        <div>
+            {listItems}
+        </div>
+    );
+
   }
 
   export default ListItems;
